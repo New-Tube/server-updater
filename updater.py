@@ -1,6 +1,10 @@
-import docker, json, os
+import docker
+import json
+import os
 
 client = docker.from_env()
+
+client.login(username="puller", password="puller", registry="miko089.ru")
 
 current_ids = json.load(open("current_ids.json"))
 
