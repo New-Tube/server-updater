@@ -1,24 +1,29 @@
 import docker
 import json
 import os
+import time
 
 client = docker.from_env()
 
-client.login(username="puller", password="puller", registry="miko089.ru")
+while True:
+    client.login(username="puller", password="puller", registry="miko089.ru")
 
-current_ids = json.load(open("current_ids.json"))
+    current_ids = json.load(open("current_ids.json"))
 
+    need_restart = False
+    with open("images-list") as images_list:
+        for image_name in images_list.readlines():
+            client.images.pull(image_name)
+            id = client.images.get(image_name).id
+            if image_name not in current_ids or current_ids[image_name] != id:
+                current_ids[image_name] = id
+                need_restart = True
 
-need_restart = False
-with open("images-list") as images_list:
-    for image_name in images_list.readlines():
-        client.images.pull(image_name)
-        id = client.images.get(image_name).id
-        if image_name not in current_ids or current_ids[image_name] != id:
-            current_ids[image_name] = id
-            need_restart = True
+    json.dump(current_ids, open("current_ids.json", 'w'))
 
-json.dump(current_ids, open("current_ids.json", 'w'))
+    if need_restart:
+        os.chdir("/home/miko089/new-tube/server/")
+        os.system("docker login --username puller --password puller miko089.ru && docker-compose down && docker-compose pull && docker-compose up -d")
+        os.chdir("/home/miko089/new-tube/server-updater/")
 
-if need_restart:
-    os.system("./restart.sh")
+    time.sleep(60 * 5)
