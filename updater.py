@@ -22,8 +22,9 @@ while True:
     json.dump(current_ids, open("current_ids.json", 'w'))
 
     if need_restart:
-        os.chdir("/home/miko089/new-tube/server/")
-        os.system("docker login --username puller --password puller miko089.ru && docker-compose down && docker-compose pull && docker-compose up -d")
-        os.chdir("/home/miko089/new-tube/server-updater/")
+        os.chdir("/home/new-tube/new-tube/server/")
+        os.system("docker login --username puller --password puller miko089.ru && docker-compose down && git pull && docker-compose pull && docker-compose up -d")
+        os.chdir("/home/new-tube/new-tube/server-updater/")
+        os.system("git pull")
 
     time.sleep(60 * 5)
