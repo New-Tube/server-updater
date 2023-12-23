@@ -2,6 +2,7 @@ import docker
 import json
 import os
 import time
+from datetime import datetime
 
 client = docker.from_env()
 
@@ -19,6 +20,8 @@ while True:
             if image_name not in current_ids or current_ids[image_name] != id:
                 current_ids[image_name] = id
                 need_restart = True
+
+    current_ids["checked_at"] = str(datetime.now())
 
     json.dump(current_ids, open("current_ids.json", 'w'))
 
