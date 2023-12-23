@@ -13,6 +13,7 @@ while True:
     need_restart = False
     with open("images-list") as images_list:
         for image_name in images_list.readlines():
+            image_name = image_name.strip()
             client.images.pull(image_name)
             id = client.images.get(image_name).id
             if image_name not in current_ids or current_ids[image_name] != id:
