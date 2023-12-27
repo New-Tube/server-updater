@@ -9,6 +9,8 @@ client = docker.from_env()
 while True:
     client.login(username="puller", password="puller", registry="miko089.ru")
 
+    os.system("git pull")
+
     current_ids = json.load(open("current_ids.json"))
 
     need_restart = False
@@ -29,6 +31,5 @@ while True:
         os.chdir("/home/new-tube/new-tube/server/")
         os.system("docker login --username puller --password puller miko089.ru && docker-compose down && git pull && docker-compose pull && docker-compose up -d")
         os.chdir("/home/new-tube/new-tube/server-updater/")
-        os.system("git pull")
 
     time.sleep(60 * 5)
