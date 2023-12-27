@@ -7,7 +7,8 @@ from datetime import datetime
 client = docker.from_env()
 
 while True:
-    client.login(username="puller", password="puller", registry="new-tube.ru")
+    client.login(username="puller", password="puller",
+                 registry="new-tube.ru:6000")
 
     os.system("git pull")
 
@@ -29,7 +30,7 @@ while True:
 
     if need_restart:
         os.chdir("/home/new-tube/new-tube/server/")
-        os.system("docker login --username puller --password puller new-tube.ru && docker-compose down && git pull && docker-compose pull && docker-compose up -d")
+        os.system("docker login --username puller --password puller new-tube.ru:6000 && docker-compose down && git pull && docker-compose pull && docker-compose up -d")
         os.chdir("/home/new-tube/new-tube/server-updater/")
 
     time.sleep(60 * 5)
